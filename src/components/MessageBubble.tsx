@@ -1,5 +1,6 @@
 
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface MessageBubbleProps {
   message: string;
@@ -9,19 +10,26 @@ interface MessageBubbleProps {
 
 export const MessageBubble = ({ message, isUser, timestamp }: MessageBubbleProps) => {
   return (
-    <div className={cn(
-      "max-w-[80%] mb-4 animate-fade-in",
-      isUser ? "ml-auto" : "mr-auto"
-    )}>
+    <motion.div 
+      initial={{ opacity: 0, translateY: 20 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      transition={{ duration: 0.3 }}
+      className={cn(
+        "max-w-[80%] mb-4 animate-fade-in",
+        isUser ? "ml-auto" : "mr-auto"
+      )}
+    >
       <div className={cn(
-        "rounded-2xl px-4 py-2 shadow-sm",
-        isUser ? "bg-gradient-to-r from-blue-50 to-blue-100" : "bg-white"
+        "rounded-2xl px-4 py-2 shadow-sm transition-all duration-300",
+        isUser 
+          ? "bg-gradient-to-r from-blue-50 to-blue-100 text-gray-800" 
+          : "bg-white text-gray-700 border border-gray-100"
       )}>
-        <p className="text-gray-800">{message}</p>
+        <p>{message}</p>
       </div>
-      <span className="text-xs text-gray-500 mt-1 block">
+      <span className="text-xs text-gray-500 mt-1 block text-right">
         {timestamp}
       </span>
-    </div>
+    </motion.div>
   );
 };

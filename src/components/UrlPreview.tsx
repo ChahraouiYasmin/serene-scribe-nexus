@@ -1,4 +1,7 @@
 
+import { Globe, ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
+
 interface UrlPreviewProps {
   url: string;
   title?: string;
@@ -7,12 +10,30 @@ interface UrlPreviewProps {
 
 export const UrlPreview = ({ url, title, description }: UrlPreviewProps) => {
   return (
-    <div className="w-full max-w-2xl p-4 my-2 rounded-lg bg-white/50 backdrop-blur-sm border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-      <a href={url} target="_blank" rel="noopener noreferrer" className="no-underline">
-        <h3 className="text-lg font-medium text-gray-800 mb-1">{title || url}</h3>
-        {description && <p className="text-gray-600 text-sm">{description}</p>}
-        <span className="text-xs text-blue-500 mt-2 block">{url}</span>
+    <motion.div 
+      initial={{ scale: 0.95, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="w-full max-w-2xl p-4 my-2 rounded-lg bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 group"
+    >
+      <a 
+        href={url} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="flex items-center gap-3 no-underline"
+      >
+        <div className="bg-blue-50 rounded-full p-2">
+          <Globe className="h-6 w-6 text-blue-500" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-lg font-medium text-gray-800 mb-1 flex items-center gap-2">
+            {title || new URL(url).hostname}
+            <ExternalLink className="h-4 w-4 text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </h3>
+          {description && <p className="text-gray-600 text-sm">{description}</p>}
+          <span className="text-xs text-blue-500 mt-1 block">{url}</span>
+        </div>
       </a>
-    </div>
+    </motion.div>
   );
 };
