@@ -10,16 +10,16 @@ interface UrlPreviewProps {
 
 export const UrlPreview = ({ url, title, description }: UrlPreviewProps) => {
   return (
-    <motion.div 
+    <motion.div
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="w-full max-w-2xl p-4 rounded-lg bg-white/70 backdrop-blur-sm border border-purple-100 shadow-sm hover:shadow-md transition-all duration-300 group"
     >
-      <a 
-        href={url} 
-        target="_blank" 
-        rel="noopener noreferrer" 
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
         className="flex items-center gap-3 no-underline"
       >
         <div className="bg-purple-50 rounded-full p-2">
