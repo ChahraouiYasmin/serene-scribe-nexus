@@ -7,6 +7,7 @@ import { UrlPreview } from "./UrlPreview";
 import { motion } from "framer-motion";
 import { UrlInputModal } from "./UrlInputModal";
 import { useToast } from "@/hooks/use-toast";
+
 export const ChatInterface = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Array<{
@@ -24,6 +25,7 @@ export const ChatInterface = () => {
   const {
     toast
   } = useToast();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
@@ -39,11 +41,10 @@ export const ChatInterface = () => {
     setMessages([...messages, newMessage]);
     setMessage("");
   };
+
   const handleUrlSubmit = (url: string) => {
-    // Basic URL validation
     const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     if (urlRegex.test(url)) {
-      // Add URL as a user message
       const urlMessage = {
         id: messages.length,
         text: `Analyzing: ${url}`,
@@ -54,10 +55,9 @@ export const ChatInterface = () => {
         })
       };
 
-      // Add a response message
       const responseMessage = {
         id: messages.length + 1,
-        text: `I'm analyzing the content at ${new URL(url).hostname}. This might take a moment...`,
+        text: "Thank you for providing the URL. If you have any questions about it, feel free to ask!",
         isUser: false,
         timestamp: new Date().toLocaleTimeString([], {
           hour: '2-digit',
@@ -66,16 +66,17 @@ export const ChatInterface = () => {
       };
       setMessages([...messages, urlMessage, responseMessage]);
 
-      // Show a toast notification instead of the persistent alert
       toast({
         title: "URL Analysis Started",
         description: `Analyzing content from ${new URL(url).hostname}`
       });
     }
   };
+
   const newChat = () => {
     window.location.reload();
   };
+
   return <div className="flex flex-col h-full bg-gradient-to-b from-purple-50/50 to-purple-100/30">
       <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-fuchsia-50 relative">
         <div className="absolute top-4 right-4">
