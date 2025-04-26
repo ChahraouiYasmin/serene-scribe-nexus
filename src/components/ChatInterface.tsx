@@ -72,7 +72,7 @@ export const ChatInterface = () => {
           </motion.div>}
       </div>
       
-      <form onSubmit={handleSubmit} className="p-6 border-t border-purple-100 bg-white/50 backdrop-blur-sm">
+      <form onSubmit={handleSubmit} className="p-6 border-t border-purple-100 backdrop-blur-sm bg-purple-50">
         <div className="flex gap-2 max-w-4xl mx-auto">
           <Button type="button" variant="outline" size="icon" className="shrink-0 border-purple-200 hover:bg-purple-50" onClick={() => setIsUrlModalOpen(true)}>
             <Link className="h-4 w-4 text-purple-500" />
