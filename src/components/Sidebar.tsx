@@ -1,7 +1,8 @@
 
 import { useState } from "react";
-import { Search, Clock, MessageCircle, MessageSquareHeart } from "lucide-react";
+import { Search, Clock, MessageCircle, MessageSquareHeart, PlusCircle } from "lucide-react";
 import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -11,9 +12,20 @@ export const Sidebar = () => {
   return (
     <div className="w-80 border-r border-purple-100 bg-white/70 backdrop-blur-sm p-4 flex flex-col h-full">
       <div className="mb-6">
-        <div className="flex items-center gap-2 mb-6">
-          <MessageSquareHeart className="h-6 w-6 text-purple-500" />
-          <h2 className="text-lg font-semibold text-purple-900">Chat History</h2>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <MessageSquareHeart className="h-6 w-6 text-purple-500" />
+            <h2 className="text-lg font-semibold text-purple-900">Chat History</h2>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2 border-purple-200 hover:bg-purple-50 text-purple-600"
+            onClick={() => window.location.reload()} // Simple reload for now to start fresh chat
+          >
+            <PlusCircle className="h-4 w-4" />
+            New Chat
+          </Button>
         </div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-purple-400" />

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Send, Link } from "lucide-react";
+import { Send, Link, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { MessageBubble } from "./MessageBubble";
