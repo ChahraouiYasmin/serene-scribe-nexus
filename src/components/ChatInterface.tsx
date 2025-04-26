@@ -1,11 +1,11 @@
-
 import { useState } from "react";
-import { Send, Link, X } from "lucide-react";
+import { Send, Link } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { MessageBubble } from "./MessageBubble";
 import { UrlPreview } from "./UrlPreview";
 import { motion } from "framer-motion";
+import { UrlInputModal } from "./UrlInputModal";
 
 export const ChatInterface = () => {
   const [message, setMessage] = useState("");
@@ -29,6 +29,8 @@ export const ChatInterface = () => {
     description?: string;
   } | null>(null);
 
+  const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
@@ -44,7 +46,7 @@ export const ChatInterface = () => {
     setMessage("");
   };
 
-  const handleUrlPaste = (url: string) => {
+  const handleUrlSubmit = (url: string) => {
     // Basic URL validation
     const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     if (urlRegex.test(url)) {
@@ -102,10 +104,7 @@ export const ChatInterface = () => {
             variant="outline"
             size="icon"
             className="shrink-0 border-purple-200 hover:bg-purple-50"
-            onClick={() => {
-              const url = prompt("Enter URL to analyze:");
-              if (url) handleUrlPaste(url);
-            }}
+            onClick={() => setIsUrlModalOpen(true)}
           >
             <Link className="h-4 w-4 text-purple-500" />
           </Button>
@@ -123,6 +122,12 @@ export const ChatInterface = () => {
           </Button>
         </div>
       </form>
+
+      <UrlInputModal
+        isOpen={isUrlModalOpen}
+        onClose={() => setIsUrlModalOpen(false)}
+        onSubmit={handleUrlSubmit}
+      />
     </div>
   );
 };
