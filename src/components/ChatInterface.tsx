@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Send, Link, X, Pencil } from "lucide-react";
 import { Button } from "./ui/button";
@@ -8,7 +7,6 @@ import { UrlPreview } from "./UrlPreview";
 import { motion } from "framer-motion";
 import { UrlInputModal } from "./UrlInputModal";
 import { useToast } from "@/hooks/use-toast";
-
 export const ChatInterface = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Array<{
@@ -22,10 +20,10 @@ export const ChatInterface = () => {
     isUser: false,
     timestamp: "Just now"
   }]);
-  
   const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
-  const { toast } = useToast();
-  
+  const {
+    toast
+  } = useToast();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
@@ -41,7 +39,6 @@ export const ChatInterface = () => {
     setMessages([...messages, newMessage]);
     setMessage("");
   };
-
   const handleUrlSubmit = (url: string) => {
     // Basic URL validation
     const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
@@ -56,7 +53,7 @@ export const ChatInterface = () => {
           minute: '2-digit'
         })
       };
-      
+
       // Add a response message
       const responseMessage = {
         id: messages.length + 1,
@@ -67,32 +64,22 @@ export const ChatInterface = () => {
           minute: '2-digit'
         })
       };
-      
       setMessages([...messages, urlMessage, responseMessage]);
-      
+
       // Show a toast notification instead of the persistent alert
       toast({
         title: "URL Analysis Started",
-        description: `Analyzing content from ${new URL(url).hostname}`,
+        description: `Analyzing content from ${new URL(url).hostname}`
       });
     }
   };
-
   const newChat = () => {
     window.location.reload();
   };
-  
   return <div className="flex flex-col h-full bg-gradient-to-b from-purple-50/50 to-purple-100/30">
       <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-fuchsia-50 relative">
         <div className="absolute top-4 right-4">
-          <Button
-            onClick={newChat}
-            variant="outline"
-            size="icon"
-            className="bg-white/70 hover:bg-purple-100 border-purple-200"
-          >
-            <Pencil className="h-4 w-4 text-purple-500" />
-          </Button>
+          
         </div>
         
         {messages.map(msg => <MessageBubble key={msg.id} message={msg.text} isUser={msg.isUser} timestamp={msg.timestamp} />)}
