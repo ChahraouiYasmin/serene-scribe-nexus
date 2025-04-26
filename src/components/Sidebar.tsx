@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Search, Clock, MessageCircle, MessageSquareHeart, PlusCircle } from "lucide-react";
+import { Search, Clock, MessageCircle, MessageSquareHeart, Pencil } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -19,12 +18,11 @@ export const Sidebar = () => {
           </div>
           <Button
             variant="outline"
-            size="sm"
-            className="gap-2 border-purple-200 hover:bg-purple-50 text-purple-600"
+            size="icon"
+            className="border-purple-200 hover:bg-purple-50 text-purple-600"
             onClick={() => window.location.reload()} // Simple reload for now to start fresh chat
           >
-            <PlusCircle className="h-4 w-4" />
-            New Chat
+            <Pencil className="h-4 w-4" />
           </Button>
         </div>
         <div className="relative">
