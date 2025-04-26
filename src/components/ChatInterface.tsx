@@ -55,7 +55,7 @@ export const ChatInterface = () => {
     setUrlPreview(null);
   };
   return <div className="flex flex-col h-full bg-gradient-to-b from-purple-50/50 to-purple-100/30">
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-purple-100">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-fuchsia-50">
         {messages.map(msg => <MessageBubble key={msg.id} message={msg.text} isUser={msg.isUser} timestamp={msg.timestamp} />)}
         
         {urlPreview && <motion.div initial={{
