@@ -39,7 +39,7 @@ export const UrlInputModal = ({
               </div>
               <h2 className="text-lg font-semibold text-purple-900">Add URL to Analyze</h2>
             </div>
-            <Button variant="ghost" size="icon" onClick={onClose} className="text-purple-400 hover:text-purple-600 hover:bg-purple-50 py-[5px]">
+            <Button variant="ghost" size="icon" onClick={onClose} className="text-purple-400 hover:text-purple-600 hover:bg-purple-50 py-0">
               <X className="h-4 w-4" />
             </Button>
           </div>
