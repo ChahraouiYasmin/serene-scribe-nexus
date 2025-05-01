@@ -26,6 +26,24 @@ const askBackend = async (url: string, question: string): Promise<string> => {
     return "❌ Could not reach the backend. Please try again.";
   }
 };
+const summarizeBackend = async (url: string): Promise<string> => {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/summarize", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ url }),
+    });
+
+    const data = await response.json();
+    return data.summary || "❌ No summary received.";
+  } catch (err) {
+    console.error("Backend error:", err);
+    return "❌ Could not reach the backend for summary.";
+  }
+};
+
 
 export const ChatInterface = () => {
   const [message, setMessage] = useState("");
@@ -159,18 +177,38 @@ export const ChatInterface = () => {
             className="flex items-center gap-2"
           >
             <UrlPreview
-              url={urlPreview.url}
-              title={urlPreview.title}
-              description={urlPreview.description}
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={clearUrlPreview}
-              className="text-purple-400 hover:text-purple-600 hover:bg-purple-50"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+  url={urlPreview.url}
+  title={urlPreview.title}
+  description={urlPreview.description}
+/>
+<Button
+  onClick={async () => {
+    const summary = await summarizeBackend(urlPreview.url);
+    const botMessage = {
+      id: messages.length + 1,
+      text: `📝 Summary:\n${summary}`,
+      isUser: false,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+    setMessages((prev) => [...prev, botMessage]);
+  }}
+  className="text-purple-500 bg-purple-50 hover:bg-purple-100 rounded px-3 py-1 text-sm"
+>
+  Summarize
+</Button>
+
+<Button
+  variant="ghost"
+  size="icon"
+  onClick={clearUrlPreview}
+  className="text-purple-400 hover:text-purple-600 hover:bg-purple-50"
+>
+  <X className="h-4 w-4" />
+</Button>
+
           </motion.div>
         )}
       </div>
