@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Send, Link, X } from "lucide-react";
+import { Send, Link, X, FilePdf } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { MessageBubble } from "./MessageBubble";
@@ -54,7 +54,7 @@ export const ChatInterface = () => {
     timestamp: string;
   }>>([{
     id: 0,
-    text: "👋 Hello! Paste a URL and ask a question. I’ll help you analyze it!",
+    text: "👋 Hello! Paste a URL or send a PDF and ask a question. I'll help you analyze it!",
     isUser: false,
     timestamp: "Just now"
   }]);
@@ -67,6 +67,7 @@ export const ChatInterface = () => {
 
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
+  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
 
   const { toast } = useToast();
 
@@ -158,6 +159,48 @@ export const ChatInterface = () => {
     setUrlPreview(null);
   };
 
+  const handlePdfUpload = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'application/pdf';
+    fileInput.onchange = (e: Event) => {
+      const target = e.target as HTMLInputElement;
+      if (target.files && target.files[0]) {
+        const file = target.files[0];
+        const pdfUrl = URL.createObjectURL(file);
+        
+        const pdfMessage = {
+          id: messages.length + 1,
+          text: `📄 PDF uploaded: ${file.name}`,
+          isUser: false,
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        };
+        
+        const acknowledgmentMessage = {
+          id: messages.length + 2,
+          text: "✅ Thank you for providing the PDF. If you have any questions about it, feel free to ask!",
+          isUser: false,
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        };
+        
+        setMessages((prev) => [...prev, pdfMessage, acknowledgmentMessage]);
+        setCurrentUrl(pdfUrl);
+        
+        toast({
+          title: "PDF Analysis Started",
+          description: `Analyzing content from ${file.name}`
+        });
+      }
+    };
+    fileInput.click();
+  };
+
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-purple-50/50 to-purple-100/30">
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
@@ -177,38 +220,37 @@ export const ChatInterface = () => {
             className="flex items-center gap-2"
           >
             <UrlPreview
-  url={urlPreview.url}
-  title={urlPreview.title}
-  description={urlPreview.description}
-/>
-<Button
-  onClick={async () => {
-    const summary = await summarizeBackend(urlPreview.url);
-    const botMessage = {
-      id: messages.length + 1,
-      text: `📝 Summary:\n${summary}`,
-      isUser: false,
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-    setMessages((prev) => [...prev, botMessage]);
-  }}
-  className="text-purple-500 bg-purple-50 hover:bg-purple-100 rounded px-3 py-1 text-sm"
->
-  Summarize
-</Button>
+              url={urlPreview.url}
+              title={urlPreview.title}
+              description={urlPreview.description}
+            />
+            <Button
+              onClick={async () => {
+                const summary = await summarizeBackend(urlPreview.url);
+                const botMessage = {
+                  id: messages.length + 1,
+                  text: `📝 Summary:\n${summary}`,
+                  isUser: false,
+                  timestamp: new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }),
+                };
+                setMessages((prev) => [...prev, botMessage]);
+              }}
+              className="text-purple-500 bg-purple-50 hover:bg-purple-100 rounded px-3 py-1 text-sm"
+            >
+              Summarize
+            </Button>
 
-<Button
-  variant="ghost"
-  size="icon"
-  onClick={clearUrlPreview}
-  className="text-purple-400 hover:text-purple-600 hover:bg-purple-50"
->
-  <X className="h-4 w-4" />
-</Button>
-
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={clearUrlPreview}
+              className="text-purple-400 hover:text-purple-600 hover:bg-purple-50"
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </motion.div>
         )}
       </div>
@@ -230,13 +272,24 @@ export const ChatInterface = () => {
           >
             <Link className="h-4 w-4 text-purple-500" />
           </Button>
+          
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="shrink-0 border-purple-200 hover:bg-purple-50"
+            onClick={handlePdfUpload}
+          >
+            <FilePdf className="h-4 w-4 text-purple-500" />
+          </Button>
+          
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder={
               currentUrl
-                ? "Ask a question about the URL..."
-                : "Paste a URL first using the 🔗 icon"
+                ? "Ask a question about the content..."
+                : "Paste a URL or upload a PDF first"
             }
             className="flex-1 border-purple-200 focus:border-purple-300 bg-white/80"
           />
