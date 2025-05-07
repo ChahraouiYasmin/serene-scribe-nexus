@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Send, Link, X, Pencil } from "lucide-react";
+
+import { useState, useRef } from "react";
+import { Send, Link, X, FileText } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { MessageBubble } from "./MessageBubble";
@@ -17,14 +18,13 @@ export const ChatInterface = () => {
     timestamp: string;
   }>>([{
     id: 0,
-    text: "Hello! Share a URL and I'll help you analyze it.",
+    text: "Hello! Paste a URL or send a PDF and ask a question. I'll help you analyze it!",
     isUser: false,
     timestamp: "Just now"
   }]);
   const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,8 +73,57 @@ export const ChatInterface = () => {
     }
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type === "application/pdf") {
+      const fileName = file.name;
+      
+      const fileMessage = {
+        id: messages.length,
+        text: `Uploaded: ${fileName}`,
+        isUser: true,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      };
+
+      const responseMessage = {
+        id: messages.length + 1,
+        text: "Thank you for providing the PDF. If you have any questions about it, feel free to ask!",
+        isUser: false,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      };
+      
+      setMessages([...messages, fileMessage, responseMessage]);
+      
+      toast({
+        title: "PDF Upload Successful",
+        description: `Analyzing content from ${fileName}`
+      });
+      
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } else if (file) {
+      toast({
+        title: "Invalid File Format",
+        description: "Please upload a PDF file.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const newChat = () => {
     window.location.reload();
+  };
+
+  const handlePdfButtonClick = () => {
+    fileInputRef.current?.click();
   };
 
   return <div className="flex flex-col h-full bg-gradient-to-b from-purple-50/50 to-purple-100/30">
@@ -91,6 +140,22 @@ export const ChatInterface = () => {
           <Button type="button" variant="outline" size="icon" className="shrink-0 border-purple-200 hover:bg-purple-50" onClick={() => setIsUrlModalOpen(true)}>
             <Link className="h-4 w-4 text-purple-500" />
           </Button>
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="icon" 
+            className="shrink-0 border-purple-200 hover:bg-purple-50" 
+            onClick={handlePdfButtonClick}
+          >
+            <FileText className="h-4 w-4 text-purple-500" />
+          </Button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileUpload}
+            accept="application/pdf"
+            className="hidden"
+          />
           <Input value={message} onChange={e => setMessage(e.target.value)} placeholder="Type your message or paste a URL..." className="flex-1 border-purple-200 focus:border-purple-300 bg-white/80" />
           <Button type="submit" className="shrink-0 bg-purple-500 hover:bg-purple-600">
             <Send className="h-4 w-4" />
